@@ -10,8 +10,41 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Item
+from .models import Item, Order, OrderItem
+from .serializers import OrderItemSerializer
 
+
+class OrderView(APIView):
+
+    def get(self, request):
+        # Получаем или создаем заказ для текущего пользователя
+        order, created = Order.objects.get_or_create()
+
+        # Получаем все элементы заказа для этого заказа
+        order_items = OrderItem.objects.filter(order=order)
+
+        # Сериализуем элементы заказа
+        serializer = OrderItemSerializer(order_items, many=True)
+
+        # Возвращаем ответ с данными о содержимом корзины
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+    def post(self, request, item_id):
+        item = get_object_or_404(Item, pk=item_id)
+        
+        # Проверяем, есть ли корзина у текущего пользователя или создаем новую
+        order_instance, created = Order.objects.get_or_create()
+        price = item.price
+
+        # Проверяем, есть ли уже такой товар в корзине, и увеличиваем его количество
+        order_item_instance, created = OrderItem.objects.get_or_create(order=order_instance, item=item, price=price)
+        if not created:
+            order_item_instance.quantity += 1
+            order_item_instance.save()
+        
+        return Response({'message': 'Item added to Order successfully'})
+    
 
 class ItemView(APIView):
 
@@ -20,6 +53,7 @@ class ItemView(APIView):
         item = get_object_or_404(Item, pk=pk)
         context = {
             'item': item,
+            # 'item_id': item.id,
             'public_stripe_key': public_stripe_key
         }
         return render(request, 'item_details.html', context)
