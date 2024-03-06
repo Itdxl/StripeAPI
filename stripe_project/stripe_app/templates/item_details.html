@@ -17,10 +17,11 @@
         var buyButton = document.getElementById('buy-button');
         var addToCartButton = document.getElementById('add-to-cart-button');
         var buyAllButton = document.getElementById('buy-all-button');
+
         var itemId = window.location.pathname.split('/').pop();
         console.log('Item ID:', itemId); // Проверяем значение itemId
         buyButton.addEventListener('click', function() {
-            console.log('ADD Button clicked'); // Проверяем,что работает кнопка
+            console.log('Buy Button clicked'); // Проверяем,что работает кнопка
             // Create a new Checkout Session using the server-side endpoint 
             // Redirect to Stripe Session Checkout
             fetch('{% url "buy-item" item.id %}', { method: 'GET' })
@@ -32,18 +33,17 @@
             .catch(error => console.error('Error:', error));
         });
         buyAllButton.addEventListener('click', function() {
-          console.log('Buy All Button clicked'); // Проверяем,что работает кнопка
-          // Create a new Checkout Session using the server-side endpoint 
-          // Redirect to Stripe Session Checkout
-          fetch('{% url "buy-item" %}', { method: 'GET' })
-          .then(response => response.json())
-          .then(session => {
-              console.log(session);
-              stripe.redirectToCheckout({ sessionId: session.session_id });
-            })
-          .catch(error => console.error('Error:', error));
-      });
-        
+            console.log('Buy All Button clicked'); // Проверяем,что работает кнопка
+            // Create a new Checkout Session using the server-side endpoint 
+            // Redirect to Stripe Session Checkout
+            fetch('{% url "buy-all" %}', { method: 'GET' })
+            .then(response => response.json())
+            .then(session => {
+                console.log(session);
+                stripe.redirectToCheckout({ sessionId: session.session_id });
+              })
+            .catch(error => console.error('Error:', error));
+        });
         addToCartButton.addEventListener('click', function() {
             console.log('Cart Button clicked');
             fetch('{% url "add-to-cart" item.id %}', {

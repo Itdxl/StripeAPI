@@ -65,9 +65,9 @@ def create_stripe_session(amount):
                 "price_data": {
                     "currency": "eur",
                     "product_data": {
-                        "name": "Purchase",  # Название товара или заказа
+                        "name": "Order",
                     },
-                    "unit_amount": int(amount * 100),  # Сумма в копейках
+                    "unit_amount": int(amount * 100),  # Stripe не работает с Decimal
                 },
                 "quantity": 1,
             }],
@@ -96,35 +96,6 @@ class BuyOrderView(APIView):
         session_id = create_stripe_session(total)
         return Response({'session_id': session_id})
 
-# class BuyItemView(APIView):
-#     def get(self, request, pk):
-#         item = get_object_or_404(Item, pk=pk)
-#         stripe.api_key = settings.STRIPE_SECRET_KEY
-#         # Создание сессии оплаты Stripe
-#         try:
-#             session = stripe.checkout.Session.create(
-#                 payment_method_types=['card'],
-#                 line_items=[{
-#                     "price_data": {
-#                         "currency": "eur",
-#                         "product_data": {
-#                         "name": item.name,
-#                     },
-#                     # Stripe не работает с десятичными числами
-#                     "unit_amount": int(item.price* 100),
-#                 },
-#                     "quantity": 1,
-#                 }],
-#                 mode='payment',
-#                 success_url = settings.REDIRECT_DOMAIN + '/success',
-# 			    cancel_url = settings.REDIRECT_DOMAIN + '/cancel',
-#             )
-            
-#             # Возвращаем идентификатор сессии оплаты
-#             return Response({'session_id': session.id})
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
 
 def successful(request):
 	return render(request, 'success.html')
@@ -132,38 +103,3 @@ def successful(request):
 
 def canceled(request):
 	return render(request, 'cancel.html')
-
-
-def get_coupon(self, pk):
-        item = get_object_or_404(Item, pk=pk)
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            discount = item.discount.get(is_active=True)
-        except Exception:
-            return None
-
-        coupon = stripe.Coupon.create(
-            duration="once",
-            id=f"coupon-{item.id}",
-            percent_off=discount.amount,
-        )
-        if coupon:
-            return Response({'coupon': coupon.id})
-        else:
-            return Response({'error': 'Discount not found for item'}, status=status.HTTP_404_NOT_FOUND)
-
-            
-        
-class CouponView(APIView):
-    def get(self, request):
-        stripe.api_key = settings.STRIPE_SECRET_KEY        
-        coupons = stripe.Coupon.list()
-        coupon_ids = [[coupon.id,coupon.percent_off] for coupon in coupons.data]
-        return JsonResponse({'coupons': coupon_ids})
-
-    def delete(self, request):
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        coupons = stripe.Coupon.list()
-        for coupon in coupons.data:
-            stripe.Coupon.delete(coupon.id)
-        return Response({'message': 'All coupons deleted successfully'})
