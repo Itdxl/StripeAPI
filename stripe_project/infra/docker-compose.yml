@@ -1,8 +1,8 @@
-version: '3.3'
+version: '3.8'
 services:
 
   db:
-    image: "sqlite"
+    image: "drupalci/sqlite-3:production"
     volumes:
       - db_volume2:/app/db/
     restart: always
@@ -10,7 +10,7 @@ services:
       - ./.env
 
   backend:
-    image: "stripeback:latest"
+    image: "stripeback5:latest"
     restart: always
     volumes:
       - static_volume:/app/static/
@@ -18,7 +18,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ./.env
+      - /.env
 
 
   nginx:
