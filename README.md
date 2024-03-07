@@ -79,4 +79,13 @@ docker-compose exec backend python manage.py loaddata backup
 Остальные эндпойнты технические/по результам действий.
 
 Скриншоты:
+```
+
 ![Alt Text](images/item1.png)
+![Alt Text](images/item2.png)
+![Alt Text](images/itembuybutton.png)
+![Alt Text](images/1itembuy.png)
+![Alt Text](images/allbuy.png)
+![Alt Text](images/cart.png)
+![Alt Text](images/success.png)
+![Alt Text](images/cancel.png)
