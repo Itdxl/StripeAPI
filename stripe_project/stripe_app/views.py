@@ -1,7 +1,6 @@
 import stripe 
 
 from django.db.models import Sum, F
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from rest_framework import status
@@ -77,7 +76,6 @@ def create_stripe_session(amount):
         )
         return session.id
     except Exception as e:
-        # Обработка ошибок создания сессии оплаты
         return str(e)
 
    
