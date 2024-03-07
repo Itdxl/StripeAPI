@@ -78,3 +78,5 @@ docker-compose exec backend python manage.py loaddata backup
 ```
 Остальные эндпойнты технические/по результам действий.
 
+Скриншоты:
+![Alt Text](images/item1.png)
