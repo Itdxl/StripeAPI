@@ -80,7 +80,7 @@ docker-compose exec backend python manage.py loaddata backup
 
 Скриншоты:
 ```
-
+```
 ![Alt Text](images/item1.png)
 ![Alt Text](images/item2.png)
 ![Alt Text](images/itembuybutton.png)
