@@ -41,6 +41,19 @@ PUBLIC_STRIPE_KEY = ''Ваш ключ''
 docker-compose up -d --build
 ```
 
+```
+docker-compose exec backend python manage.py createsuperuser
+```
+
+```
+docker-compose exec backend python manage.py loaddata backup
+```
+
+Альетернативный вариант развертывания проекта:
+
+```
+развернуть все руками из папки stripe_project
+```
 
 
 Откройте в бразуере:
@@ -50,9 +63,18 @@ docker-compose up -d --build
 ```
 
 ```
-127.0.0./api/сart/ - Корзина drf формат
+127.0.0./api/item/int:pk/ - Предмет
 ```
 
 ```
-127.0.0./api/item/int:pk/ - Предмет
+127.0.0./api/welcome/ - Привественная страница
+
+```
+
+
+```
+127.0.0./api/сart/ - Корзина drf формат```
+
+```
+Остальные эндпойнты технические/по результам действий.
 ```
