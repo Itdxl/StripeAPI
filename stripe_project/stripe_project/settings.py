@@ -21,9 +21,10 @@ PUBLIC_STRIPE_KEY = os.getenv('PUBLIC_STRIPE_KEY')
 REDIRECT_DOMAIN = 'http://127.0.0.1:8000'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
 
 
 # Application definition

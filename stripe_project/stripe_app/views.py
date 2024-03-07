@@ -101,3 +101,6 @@ def successful(request):
 
 def canceled(request):
 	return render(request, 'cancel.html')
+
+def index(request):
+	return render(request, 'index.html')
