@@ -1,15 +1,15 @@
-import stripe 
-
 from django.db.models import Sum, F
 from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import stripe
 
 from .models import Item, Order, OrderItem
 from .serializers import OrderItemSerializer
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class OrderView(APIView):
@@ -30,7 +30,6 @@ class OrderView(APIView):
             'total': total if total else 0
         }
         return Response(data, status=status.HTTP_200_OK)
-    
 
     def post(self, request, item_id):
         item = get_object_or_404(Item, pk=item_id)
@@ -41,9 +40,9 @@ class OrderView(APIView):
         if not created:
             order_item_instance.quantity += 1
             order_item_instance.save()
-        
+
         return Response({'message': 'Added to order'})
-    
+
 
 class ItemView(APIView):
     def get(self, request, pk):
@@ -55,7 +54,10 @@ class ItemView(APIView):
         }
         return render(request, 'item_details.html', context)
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+
+
 def create_stripe_session(amount):
     try:
         session = stripe.checkout.Session.create(
@@ -78,15 +80,16 @@ def create_stripe_session(amount):
     except Exception as e:
         return str(e)
 
-   
+
 class BuyItemView(APIView):
     def get(self, request, pk):
         item = get_object_or_404(Item, pk=pk)
         session_id = create_stripe_session(item.price)
         return Response({'session_id': session_id})
-    
+
+
 class BuyOrderView(APIView):
-     def get(self, request):
+    def get(self, request):
         order, created = Order.objects.get_or_create()
         order_items = OrderItem.objects.filter(order=order)
         total = order_items.annotate(total_for_item=F('price') * F('quantity')) \
@@ -96,11 +99,12 @@ class BuyOrderView(APIView):
 
 
 def successful(request):
-	return render(request, 'success.html')
+    return render(request, 'success.html')
 
 
 def canceled(request):
-	return render(request, 'cancel.html')
+    return render(request, 'cancel.html')
+
 
 def index(request):
-	return render(request, 'index.html')
+    return render(request, 'index.html')
