@@ -55,9 +55,6 @@ class ItemView(APIView):
         return render(request, 'item_details.html', context)
 
 
-
-
-
 def create_stripe_session(amount):
     try:
         session = stripe.checkout.Session.create(
